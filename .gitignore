@@ -1,0 +1,12 @@
+# Simulation artifacts (Icarus Verilog / Verilator)
+*.vcd
+*.vvp
+*.out
+obj_dir/
+
+# OS cruft
+.DS_Store
+
+# Claude reference material (kept local only)
+claude/
+CLAUDE.md
