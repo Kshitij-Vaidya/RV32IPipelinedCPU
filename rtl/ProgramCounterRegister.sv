@@ -3,6 +3,7 @@ module ProgramCounterRegister
 (
   input  logic        clock,
   input  logic        reset,
+  input  logic [31:0] programCounterNextValue,
   output logic [31:0] programCounterValue
 );
 
@@ -10,7 +11,7 @@ module ProgramCounterRegister
     if (reset) begin
       programCounterValue <= RESET_VECTOR;
     end else begin
-      programCounterValue <= programCounterValue + 32'd4;
+      programCounterValue <= programCounterNextValue;
     end
   end
 

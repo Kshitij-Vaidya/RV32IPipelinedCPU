@@ -24,7 +24,7 @@ package Rv32iPackage;
   localparam logic [2:0] FUNCT3_OR                           = 3'b110;
   localparam logic [2:0] FUNCT3_AND                          = 3'b111;
 
-  localparam logic [2:0] FUNCT3_BRANCH_EQUAL                 = 3'b000;
+  localparam logic [2:0] FUNCT3_BRANCH_EQUAL                  = 3'b000;
   localparam logic [2:0] FUNCT3_BRANCH_NOT_EQUAL              = 3'b001;
   localparam logic [2:0] FUNCT3_BRANCH_LESS_THAN              = 3'b100;
   localparam logic [2:0] FUNCT3_BRANCH_GREATER_EQUAL          = 3'b101;
@@ -44,6 +44,29 @@ package Rv32iPackage;
   localparam logic [6:0] FUNCT7_DEFAULT   = 7'b0000000;
   localparam logic [6:0] FUNCT7_ALTERNATE = 7'b0100000;
 
+  // arithmeticOperationSelect: which category of arithmeticOperationCode ArithmeticLogicUnitControl derives
+  localparam logic [1:0] ARITHMETIC_OPERATION_ADD_FOR_ADDRESS        = 2'b00;
+  localparam logic [1:0] ARITHMETIC_OPERATION_FROM_FUNCTION_FIELDS   = 2'b01;
+
+  // operationCode: the arithmetic logic unit's actual operation, expanded by ArithmeticLogicUnitControl
+  localparam logic [3:0] ALU_OPERATION_ADD  = 4'b0000;
+  localparam logic [3:0] ALU_OPERATION_SUB  = 4'b0001;
+  localparam logic [3:0] ALU_OPERATION_SLL  = 4'b0010;
+  localparam logic [3:0] ALU_OPERATION_SLT  = 4'b0011;
+  localparam logic [3:0] ALU_OPERATION_SLTU = 4'b0100;
+  localparam logic [3:0] ALU_OPERATION_XOR  = 4'b0101;
+  localparam logic [3:0] ALU_OPERATION_SRL  = 4'b0110;
+  localparam logic [3:0] ALU_OPERATION_SRA  = 4'b0111;
+  localparam logic [3:0] ALU_OPERATION_OR   = 4'b1000;
+  localparam logic [3:0] ALU_OPERATION_AND  = 4'b1001;
+
+  // writebackSourceSelect: what value the write-back mux presents to RegisterFile.destinationRegisterData
+  localparam logic [2:0] WRITEBACK_SOURCE_ARITHMETIC_LOGIC_UNIT_RESULT   = 3'b000;
+  localparam logic [2:0] WRITEBACK_SOURCE_MEMORY_READ_DATA               = 3'b001;
+  localparam logic [2:0] WRITEBACK_SOURCE_PROGRAM_COUNTER_PLUS_FOUR      = 3'b010;
+  localparam logic [2:0] WRITEBACK_SOURCE_PROGRAM_COUNTER_PLUS_IMMEDIATE = 3'b011;
+  localparam logic [2:0] WRITEBACK_SOURCE_IMMEDIATE_VALUE                = 3'b100;
+
   typedef struct packed {
     logic       registerWriteEnable;
     logic       memoryReadEnable;
@@ -52,7 +75,7 @@ package Rv32iPackage;
     logic       secondOperandSelect;
     logic       branchEnable;
     logic       jumpEnable;
-    logic [1:0] writebackSourceSelect;
+    logic [2:0] writebackSourceSelect;
   } control_bus_t;
 
 endpackage : Rv32iPackage
