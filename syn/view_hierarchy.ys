@@ -1,0 +1,19 @@
+read_verilog build/synth/Rv32iCore.v
+hierarchy -top Rv32iCore
+proc
+opt_clean
+show -format dot -prefix build/synth/hierarchy/Rv32iCore Rv32iCore
+show -format dot -prefix build/synth/hierarchy/ForwardingUnit ForwardingUnit
+show -format dot -prefix build/synth/hierarchy/HazardDetectionUnit HazardDetectionUnit
+show -format dot -prefix build/synth/hierarchy/MemWbPipelineRegister MemWbPipelineRegister
+show -format dot -prefix build/synth/hierarchy/ExMemPipelineRegister ExMemPipelineRegister
+show -format dot -prefix build/synth/hierarchy/IdExPipelineRegister IdExPipelineRegister
+show -format dot -prefix build/synth/hierarchy/IfIdPipelineRegister IfIdPipelineRegister
+show -format dot -prefix build/synth/hierarchy/DataMemory DataMemory
+show -format dot -prefix build/synth/hierarchy/ArithmeticLogicUnit ArithmeticLogicUnit
+show -format dot -prefix build/synth/hierarchy/ArithmeticLogicUnitControl ArithmeticLogicUnitControl
+show -format dot -prefix build/synth/hierarchy/ControlUnit ControlUnit
+show -format dot -prefix build/synth/hierarchy/ImmediateGenerator ImmediateGenerator
+show -format dot -prefix build/synth/hierarchy/RegisterFile RegisterFile
+show -format dot -prefix build/synth/hierarchy/InstructionMemory InstructionMemory
+show -format dot -prefix build/synth/hierarchy/ProgramCounterRegister ProgramCounterRegister

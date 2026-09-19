@@ -1,0 +1,6 @@
+read_verilog build/synth/Rv32iCore.v
+hierarchy -top Rv32iCore -check
+synth -top Rv32iCore
+flatten
+write_json build/synth/Rv32iCore.json
+stat
