@@ -11,6 +11,12 @@ RTL_SOURCES = rtl/Rv32iPackage.sv \
               rtl/ArithmeticLogicUnitControl.sv \
               rtl/ArithmeticLogicUnit.sv \
               mem/DataMemory.sv \
+              rtl/IfIdPipelineRegister.sv \
+              rtl/IdExPipelineRegister.sv \
+              rtl/ExMemPipelineRegister.sv \
+              rtl/MemWbPipelineRegister.sv \
+              rtl/HazardDetectionUnit.sv \
+              rtl/ForwardingUnit.sv \
               rtl/Rv32iCore.sv
 
 TB_SOURCES = tb/Rv32iCoreTestbench.sv
@@ -27,7 +33,7 @@ $(SIM_BINARY): $(RTL_SOURCES) $(TB_SOURCES)
 	$(IVERILOG) -g2012 -o $(SIM_BINARY) $(RTL_SOURCES) $(TB_SOURCES)
 
 wave: sim
-	$(SURFER) build/phase1_waveform.vcd
+	$(SURFER) build/phase2_waveform.vcd
 
 clean:
 	rm -rf build

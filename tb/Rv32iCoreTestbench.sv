@@ -4,6 +4,7 @@ module Rv32iCoreTestbench;
   localparam int unsigned LoadStoreCycleCount  = 30;
   localparam int unsigned BranchesCycleCount   = 90;
   localparam int unsigned JumpsUpperCycleCount = 20;
+  localparam int unsigned HazardsCycleCount    = 50;
 
   logic clock;
   logic reset;
@@ -12,6 +13,7 @@ module Rv32iCoreTestbench;
   Rv32iCore dutLoadStore   (.clock(clock), .reset(reset), .programCounterValue(), .instructionWord());
   Rv32iCore dutBranches    (.clock(clock), .reset(reset), .programCounterValue(), .instructionWord());
   Rv32iCore dutJumpsUpper  (.clock(clock), .reset(reset), .programCounterValue(), .instructionWord());
+  Rv32iCore dutHazards     (.clock(clock), .reset(reset), .programCounterValue(), .instructionWord());
 
   initial clock = 1'b0;
   always #5 clock = ~clock;
@@ -21,6 +23,7 @@ module Rv32iCoreTestbench;
     $readmemh("tests/asm/phase1_load_store.hex",  dutLoadStore.instructionMemory.memoryArray);
     $readmemh("tests/asm/phase1_branches.hex",    dutBranches.instructionMemory.memoryArray);
     $readmemh("tests/asm/phase1_jumps_upper.hex", dutJumpsUpper.instructionMemory.memoryArray);
+    $readmemh("tests/asm/phase2_hazards.hex",     dutHazards.instructionMemory.memoryArray);
     reset = 1'b1;
     repeat (2) @(posedge clock);
     reset = 1'b0;
@@ -40,6 +43,9 @@ module Rv32iCoreTestbench;
       if (dutJumpsUpper.programCounterValue[1:0] != 2'b00) begin
         $error("dutJumpsUpper: programCounterValue not 4-byte aligned: %0h", dutJumpsUpper.programCounterValue);
       end
+      if (dutHazards.programCounterValue[1:0] != 2'b00) begin
+        $error("dutHazards: programCounterValue not 4-byte aligned: %0h", dutHazards.programCounterValue);
+      end
     end
   end
 
@@ -50,7 +56,7 @@ module Rv32iCoreTestbench;
   endtask
 
   initial begin
-    $dumpfile("build/phase1_waveform.vcd");
+    $dumpfile("build/phase2_waveform.vcd");
     $dumpvars(0, Rv32iCoreTestbench);
 
     repeat (AluOpsCycleCount) @(posedge clock);
@@ -100,6 +106,32 @@ module Rv32iCoreTestbench;
     checkRegister("jumpsUpper", 7, dutJumpsUpper.registerFile.registerArray[7], 32'd32);
     checkRegister("jumpsUpper", 8, dutJumpsUpper.registerFile.registerArray[8], 32'd0);
     checkRegister("jumpsUpper", 9, dutJumpsUpper.registerFile.registerArray[9], 32'd1);
+
+    repeat (HazardsCycleCount) @(posedge clock);
+    checkRegister("hazards",  1, dutHazards.registerFile.registerArray[1],  32'd5);
+    checkRegister("hazards",  2, dutHazards.registerFile.registerArray[2],  32'd10);
+    checkRegister("hazards",  3, dutHazards.registerFile.registerArray[3],  32'd7);
+    checkRegister("hazards",  4, dutHazards.registerFile.registerArray[4],  32'd0);
+    checkRegister("hazards",  5, dutHazards.registerFile.registerArray[5],  32'd14);
+    checkRegister("hazards",  6, dutHazards.registerFile.registerArray[6],  32'd9);
+    checkRegister("hazards",  7, dutHazards.registerFile.registerArray[7],  32'd0);
+    checkRegister("hazards",  8, dutHazards.registerFile.registerArray[8],  32'd0);
+    checkRegister("hazards",  9, dutHazards.registerFile.registerArray[9],  32'd18);
+    checkRegister("hazards", 10, dutHazards.registerFile.registerArray[10], 32'd36);
+    checkRegister("hazards", 11, dutHazards.registerFile.registerArray[11], 32'd40);
+    checkRegister("hazards", 12, dutHazards.registerFile.registerArray[12], 32'd4096);
+    checkRegister("hazards", 13, dutHazards.registerFile.registerArray[13], 32'd4096);
+    checkRegister("hazards", 14, dutHazards.registerFile.registerArray[14], 32'd100);
+    checkRegister("hazards", 15, dutHazards.registerFile.registerArray[15], 32'd123);
+    checkRegister("hazards", 16, dutHazards.registerFile.registerArray[16], 32'd123);
+    checkRegister("hazards", 17, dutHazards.registerFile.registerArray[17], 32'd246);
+    checkRegister("hazards", 18, dutHazards.registerFile.registerArray[18], 32'd1);
+    checkRegister("hazards", 19, dutHazards.registerFile.registerArray[19], 32'd1);
+    checkRegister("hazards", 20, dutHazards.registerFile.registerArray[20], 32'd55);
+    checkRegister("hazards", 21, dutHazards.registerFile.registerArray[21], 32'd1);
+    checkRegister("hazards", 22, dutHazards.registerFile.registerArray[22], 32'd2);
+    checkRegister("hazards", 23, dutHazards.registerFile.registerArray[23], 32'd77);
+    checkRegister("hazards", 24, dutHazards.registerFile.registerArray[24], 32'd88);
 
     $finish;
   end

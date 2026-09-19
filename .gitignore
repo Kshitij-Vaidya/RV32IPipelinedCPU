@@ -3,6 +3,7 @@
 *.vvp
 *.out
 obj_dir/
+build/
 
 # OS cruft
 .DS_Store

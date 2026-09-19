@@ -78,4 +78,51 @@ package Rv32iPackage;
     logic [2:0] writebackSourceSelect;
   } control_bus_t;
 
+  // forwardSourceSelect: which pipeline stage the ForwardingUnit steers into an ALU operand
+  localparam logic [1:0] FORWARD_SOURCE_REGISTER_FILE             = 2'b00;
+  localparam logic [1:0] FORWARD_SOURCE_EXECUTE_MEMORY_REGISTER   = 2'b01;
+  localparam logic [1:0] FORWARD_SOURCE_MEMORY_WRITEBACK_REGISTER = 2'b10;
+
+  typedef struct packed {
+    logic [31:0] programCounterValue;
+    logic [31:0] programCounterPlusFour;
+    logic [31:0] instructionWord;
+  } ifIdRegister_t;
+
+  typedef struct packed {
+    logic [31:0]   programCounterValue;
+    logic [31:0]   programCounterPlusFour;
+    logic [31:0]   sourceRegisterOneData;
+    logic [31:0]   sourceRegisterTwoData;
+    logic [31:0]   immediateValue;
+    logic [4:0]    sourceRegisterOneAddress;
+    logic [4:0]    sourceRegisterTwoAddress;
+    logic [4:0]    destinationRegisterAddress;
+    logic [6:0]    operationCodeField;
+    logic [2:0]    functionCodeThreeField;
+    logic [6:0]    functionCodeSevenField;
+    control_bus_t  controlBus;
+  } idExRegister_t;
+
+  typedef struct packed {
+    logic [31:0]   programCounterPlusFour;
+    logic [31:0]   programCounterPlusImmediate;
+    logic [31:0]   arithmeticResult;
+    logic [31:0]   sourceRegisterTwoData;
+    logic [4:0]    destinationRegisterAddress;
+    logic [31:0]   immediateValue;
+    logic [2:0]    functionCodeThreeField;
+    control_bus_t  controlBus;
+  } exMemRegister_t;
+
+  typedef struct packed {
+    logic [31:0]   programCounterPlusFour;
+    logic [31:0]   programCounterPlusImmediate;
+    logic [31:0]   memoryReadData;
+    logic [31:0]   arithmeticResult;
+    logic [31:0]   immediateValue;
+    logic [4:0]    destinationRegisterAddress;
+    control_bus_t  controlBus;
+  } memWbRegister_t;
+
 endpackage : Rv32iPackage

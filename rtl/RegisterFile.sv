@@ -22,9 +22,30 @@ module RegisterFile (
     end
   end
 
+  logic sourceRegisterOneWriteBypass;
+  logic sourceRegisterTwoWriteBypass;
+
   always_comb begin
-    sourceRegisterOneData = (sourceRegisterOneAddress == 5'd0) ? 32'd0 : registerArray[sourceRegisterOneAddress];
-    sourceRegisterTwoData = (sourceRegisterTwoAddress == 5'd0) ? 32'd0 : registerArray[sourceRegisterTwoAddress];
+    sourceRegisterOneWriteBypass = registerWriteEnable && (destinationRegisterAddress != 5'd0) &&
+                                    (destinationRegisterAddress == sourceRegisterOneAddress);
+    sourceRegisterTwoWriteBypass = registerWriteEnable && (destinationRegisterAddress != 5'd0) &&
+                                    (destinationRegisterAddress == sourceRegisterTwoAddress);
+
+    if (sourceRegisterOneAddress == 5'd0) begin
+      sourceRegisterOneData = 32'd0;
+    end else if (sourceRegisterOneWriteBypass) begin
+      sourceRegisterOneData = destinationRegisterData;
+    end else begin
+      sourceRegisterOneData = registerArray[sourceRegisterOneAddress];
+    end
+
+    if (sourceRegisterTwoAddress == 5'd0) begin
+      sourceRegisterTwoData = 32'd0;
+    end else if (sourceRegisterTwoWriteBypass) begin
+      sourceRegisterTwoData = destinationRegisterData;
+    end else begin
+      sourceRegisterTwoData = registerArray[sourceRegisterTwoAddress];
+    end
   end
 
 endmodule : RegisterFile
